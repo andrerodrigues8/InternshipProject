@@ -48,30 +48,23 @@ def fetch_url(url):
          return pd.DataFrame()  # Return empty DataFrame on error
 
 def store_data(xlsData):         
-    logging.info(f"Available columns in Excel file: {list(xlsData.columns)}")
+    
     for _, row in xlsData.iterrows():
-        # Skip row if any required field is empty/NaN
-        if pd.isna(row['Number of Orders']) or pd.isna(row['Max Price of Orders ']) or \
-           pd.isna(row['Min Price of Orders ']) or pd.isna(row['Average Price of Orders ']) or \
-           pd.isna(row['Number of Quotes '])  or \
-           pd.isna(row['Start Prices ']) or pd.isna(row['Fixing Prices ']) or \
-           pd.isna(row['Open Interest ']):
-            logging.info(f"Skipping row with empty values for instrument: {row['Instrument ']}")
-            continue
+       
             
         Trade.objects.create(
             day = pd.to_datetime(row['Trade Day']).date(),
             instrument = row['Instrument '],
-            number_of_orders = int(row['Number of Orders']),
-            max_price_of_orders = float(row['Max Price of Orders ']),
-            min_price_of_orders = float(row['Min Price of Orders ']),
-            average_price_of_orders = float(row['Average Price of Orders ']),
-            number_of_quotes = int(row['Number of Quotes ']),
+            number_of_orders = int(0 if pd.isna(row['Number of Orders']) else row['Number of Orders']),
+            max_price_of_orders = float(0 if pd.isna(row['Max Price of Orders ']) else row['Max Price of Orders ']),
+            min_price_of_orders = float(0 if pd.isna(row['Min Price of Orders ']) else row['Min Price of Orders ']),
+            average_price_of_orders = float(0 if pd.isna(row['Average Price of Orders ']) else row['Average Price of Orders ']),
+            number_of_quotes = int(0 if pd.isna(row['Number of Quotes ']) else row['Number of Quotes ']),
             number_of_trades = int(0 if pd.isna(row['Number of Trades']) else row['Number of Trades']),
             average_price_of_trades_vwap = float(0 if pd.isna(row['Average Price of Trades (VWAP)']) else row['Average Price of Trades (VWAP)']),
             total_quantity_of_trades = int(0 if pd.isna(row['Total Quantity of Trades ']) else row['Total Quantity of Trades ']),
-            start_prices = float(row['Start Prices ']),
-            fixing_prices = float(row['Fixing Prices ']),
-            open_interest = int(row['Open Interest '])
+            start_prices = float(0 if pd.isna(row['Start Prices ']) else row['Start Prices ']),
+            fixing_prices = float(0 if pd.isna(row['Fixing Prices ']) else row['Fixing Prices ']),
+            open_interest = int(0 if pd.isna(row['Open Interest ']) else row['Open Interest '])
             )
         logging.info(f"Stored data for instrument: {row['Instrument ']}")
