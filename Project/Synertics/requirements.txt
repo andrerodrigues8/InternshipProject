@@ -1,2 +1,8 @@
 django
 psycopg[binary]
+celery
+celery[redis]  # If you're using Redis as a broker
+django-celery-beat  # For periodic tasks
+requests  # For making HTTP requests
+pandas  # For data manipulation and analysis
+openpyxl  # For Excel file handling
