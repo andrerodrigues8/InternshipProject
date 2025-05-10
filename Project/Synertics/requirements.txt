@@ -1,9 +1,10 @@
 django
-psycopg[binary]
+psycopg[binary] #PSQL driver
 celery
-celery[redis]  # If you're using Redis as a broker
-django-celery-beat  # For periodic tasks
-requests  # For making HTTP requests
-pandas  # For data manipulation and analysis
-openpyxl  # For Excel file handling
-django-pwa  # For Progressive Web App support
+celery[redis]  # Broker
+django-celery-beat  # Scheduled tasks
+requests  # Extract data from web
+pandas  # Data manipulation
+openpyxl  # Excel file handling
+django-pwa  # Progressive Web App
+djangorestframework #API

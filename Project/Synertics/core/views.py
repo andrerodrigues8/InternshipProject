@@ -12,6 +12,18 @@ def home(request):
     return render(request, "core/home.html")
 
 def index(request):
+    
+  
+    calc=calculations()
+    variation=variation_calc(calc[1])
+    context = {
+        "dates": json.dumps(calc[0]),
+        "prices": json.dumps(calc[1]),
+        "variation": json.dumps(variation)
+    }
+    return render(request, "core/index.html", context)
+
+def calculations():
     start_date = datetime.today() - timedelta(days=6)
     trades = {}
     
@@ -33,19 +45,13 @@ def index(request):
     
     dates = [str(date.strftime('%d/%m/%Y')) for date in trades.keys()]
     prices = list(trades.values())
+    
+    
+    return [dates,prices]
+def variation_calc(prices):
     if len(prices) > 1:
         variation=round((prices[-1]-prices[-2])/prices[-2]*100,2)
     else:
         variation=0
-  
     logger.info(f"Variation: {variation}")
-    context = {
-        "dates": json.dumps(dates),
-        "prices": json.dumps(prices),
-        "variation": json.dumps(variation)
-    }
-    
-    return render(request, "core/index.html", context)
-
-
-
+    return variation

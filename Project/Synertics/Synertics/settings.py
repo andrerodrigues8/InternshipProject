@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "core.apps.CoreConfig",
     'django_celery_beat',
-    "pwa"
+    "pwa",
+    "rest_framework"
     
 ]
 
