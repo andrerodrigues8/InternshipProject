@@ -148,7 +148,7 @@ from celery.schedules import crontab
 CELERY_BEAT_SCHEDULE = {
     'daily_scrape': {
         'task': 'daily_scrape',
-        'schedule': crontab(hour=19, minute=0),  
+        'schedule': crontab(hour=21, minute=0),  
         'options': {'queue': 'celery'}
     },
     

@@ -1,20 +1,189 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Trading Data Graph</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <div style="width: 800px; margin: 0 auto;">
-        <h1>Trading Data Graph</h1>
-        <canvas id="myChart"></canvas>
-    </div>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #f7f8fa;
+            font-family: 'Open Sans', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
+        .header {
+            background: #fff;
+            box-shadow: 0 2px 6px 0 rgba(0,0,0,0.1);
+            padding: 18px 0 10px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: flex-start;
+            margin-left: 20px;
+            gap: 12px;
+        }
+
+        .logo-img {
+            height: 38px;
+            width: auto;
+            margin-top: -5px;
+        }
+
+
+        .container {
+            width: 100vw;
+            max-width: 100vw;
+            margin-left: 20px;
+            padding: 0;
+        }
+
+        .markets-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #134970;
+            margin-bottom: 10px;
+            margin-top: 10px;
+            
+        }
+
+        .badge-wrapper {
+            display: block;
+            width: fit-content;
+            min-width: 180px;
+            padding-right: 24px;
+        }
+
+        .badge {
+            display: flex;
+            align-items: center;
+            background: #d7edfc;
+            border-radius: 40px;
+            padding: 12px 22px 12px 14px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #205081;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(42, 111, 161, 0.07);
+            gap: 12px;
+            min-width: 0;
+        }
+        .badge-flag {
+            width: 44px;
+            height: 44px;
+            background: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: -5px;
+            overflow: hidden;
+            padding: 0;
+        }
+        .badge-flag img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0;
+            display: block;
+        }
+        .badge-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 2px;
+        }
+        .badge-country {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #134970;
+            margin-right: 0;
+        }
+        .badge-change-group {
+            display: flex;
+            align-items: center;
+            gap: 0px;
+            margin-top: 2px;
+        }
+        .badge-bolt {
+            width: 18px;
+            height: 18px;
+            margin-right: 0;
+        }
+        .badge-change {
+            color: #81ad70;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-left: 0;
+        }
+
+        .chart-area {
+            width: 98vw;
+            height: 60vh;
+            margin-left: 0px;
+            margin-right: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+
+        .chart-area canvas {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100%;
+            max-height: 100%;
+            background: none;
+        }
+
+        h1 {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="{% static 'core/assets/logo.png' %}" alt="Logo" class="logo-img">
+
+        </div>
+    </div>
+    <div class="container">
+        <div class="markets-title">Markets</div>
+        <div class="badge-wrapper">
+            <div class="badge">
+                <span class="badge-flag">
+                    <img src="{% static 'core/assets/greece.png' %}" alt="Greece Flag">
+                </span>
+                <span class="badge-info">
+                    <span class="badge-country">Greece</span>
+                    <span class="badge-change-group">
+                        <svg class="badge-bolt" viewBox="0 0 20 20" fill="none"><path d="M10 2L4 12h5l-1 6 7-10h-5l1-6z" fill="#134970"/></svg>
+                        <span id="variation" class="badge-change"></span>
+                    </span>
+                </span>
+            </div>
+        </div>
+        <div class="chart-area">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
     <script>
         const ctx = document.getElementById('myChart');
         const dates = JSON.parse('{{ dates|safe }}');
         const prices = JSON.parse('{{ prices|safe }}');
-
+        const variation = JSON.parse('{{ variation|safe }}');
+        const variationId=document.getElementById('variation');
+        variationId.textContent=variation+"%";
         new Chart(ctx, {
             type: 'line',
             data: {
@@ -22,31 +191,57 @@
                 datasets: [{
                     label: 'Average Price',
                     data: prices,
-                    borderWidth: 1,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
+                    borderWidth: 2,
+                    borderColor: 'rgb(42, 111, 161)',
+                    backgroundColor: 'rgba(42, 111, 161, 0.08)',
+                    tension: 0.2,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: 'rgb(42, 111, 161)',
+                    pointBorderWidth: 2
                 }]
             },
             options: {
                 responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Price'
+                        grid: {
+                            color: '#cfcfcf',
+                            
+                            
+                        },
+                        border: {
+                            display: false,
+                            dash: [3,3],
+                            
+
+                        },
+                        ticks:{
+                            stepSize: 25,
                         }
                     },
                     x: {
-                        title: {
-                            display: true,
-                            text: 'Date'
+                        grid: {
+                            color: '#cfcfcf',
+                            
+                            
+                        },
+                        border: {
+                            display: false,
+                            dash: [3,3],
+                            
+
                         }
+                        
                     }
                 }
             }
         });
     </script>
 </body>
+
 </html>
-   
