@@ -6,3 +6,4 @@ django-celery-beat  # For periodic tasks
 requests  # For making HTTP requests
 pandas  # For data manipulation and analysis
 openpyxl  # For Excel file handling
+django-pwa  # For Progressive Web App support

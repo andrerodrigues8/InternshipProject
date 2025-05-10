@@ -1,5 +1,6 @@
 Requirement 4 done
-Requirement 5 done
+Requirement 5 done with PSQL
 Requirement 10 done
 Requirement 1 done
 Requirement 3 done
+Requirement 2 done with PWA
