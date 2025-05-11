@@ -5,12 +5,16 @@ from .models import Trade
 import json
 import logging
 from decimal import Decimal
-
+from .tasks import daily_scrape
 logger = logging.getLogger(__name__)
 
-def home(request):
-    return render(request, "core/home.html")
 
+def call_scraper(request):
+    answer = daily_scrape()
+    return JsonResponse({
+        "message": "Scraping task initiated successfully",
+        "result": answer
+    })
 def index(request):
     
   

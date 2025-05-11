@@ -46,7 +46,7 @@ def daily_scrape():
                 f"Scraping Error - No Data Found ({current_time})",
                 f"Failed to find data for date {current_time}.\nURL: {url}"
             )
-            return "No data found for the given date."
+            return f"No data found for {current_time}"
 
         logging.info(f"Data fetched successfully for the date: {current_time}")
         store_data(xlsData)
