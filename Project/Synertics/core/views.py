@@ -42,9 +42,9 @@ def calculations():
                 trades[day.date()] = float(prices[0])
                 logger.info(f"Found trades for {day.date()}: {trades[day.date()]}")
             else:
-                logger.warn(f"No valid price data for {day.date()}")
+                logger.warning(f"No valid price data for {day.date()}")
         else:
-            logger.warn(f"No trades found for {day.date()}")
+            logger.warning(f"No trades found for {day.date()}")
     
     
     dates = [str(date.strftime('%d/%m/%Y')) for date in trades.keys()]
