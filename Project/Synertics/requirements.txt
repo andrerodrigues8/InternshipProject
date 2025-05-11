@@ -8,3 +8,4 @@ pandas  # Data manipulation
 openpyxl  # Excel file handling
 django-pwa  # Progressive Web App
 djangorestframework #API
+django-cors-headers # CORS support

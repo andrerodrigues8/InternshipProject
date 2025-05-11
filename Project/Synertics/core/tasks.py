@@ -4,6 +4,8 @@ from celery import shared_task
 from datetime import datetime
 from celery.schedules import crontab
 from Synertics.celery import app
+from django.core.mail import send_mail
+from django.conf import settings
 
 from io import BytesIO
 import requests
@@ -11,26 +13,53 @@ import pandas as pd
 from .models import Trade
 
 import logging
+import traceback
 logging.basicConfig(level=logging.INFO)
+
+def send_error_notification(subject, error_message):
+    try:
+        send_mail(
+            subject=subject,
+            message=error_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[settings.ADMIN_EMAIL],
+            fail_silently=False,
+        )
+        logging.info(f"Error notification sent: {subject}")
+    except Exception as e:
+        logging.error(f"Failed to send error notification: {str(e)}")
 
 @shared_task(name='daily_scrape')
 def daily_scrape():
-    
-    
     current_time = datetime.now().strftime("%Y%m%d")
     logging.info(f"Starting daily scrape at {current_time}")
     
     url=f"https://www.enexgroup.gr/documents/20126/314344/{current_time}_DER_DOL_EN_v01.xlsx"
     logging.info(f"Fetching data from URL: {url}")
 
-    xlsData=fetch_url(url)
-    if xlsData.empty:
-        logging.error(f"No data found for the date: {current_time}")
-        return "No data found for the given date."
-    logging.info(f"Data fetched successfully for the date: {current_time}")
-    store_data(xlsData)
+    try:
+        xlsData = fetch_url(url)
+        if xlsData.empty:
+            error_msg = f"No data found for the date: {current_time}"
+            logging.error(error_msg)
+            send_error_notification(
+                f"Scraping Error - No Data Found ({current_time})",
+                f"Failed to find data for date {current_time}.\nURL: {url}"
+            )
+            return "No data found for the given date."
 
-    return f"Daily task completed at {current_time}"
+        logging.info(f"Data fetched successfully for the date: {current_time}")
+        store_data(xlsData)
+        return f"Daily task completed at {current_time}"
+
+    except Exception as e:
+        error_msg = f"Unexpected error during scraping: {str(e)}\n{traceback.format_exc()}"
+        logging.error(error_msg)
+        send_error_notification(
+            f"Scraping Error - Unexpected Error ({current_time})",
+            f"An unexpected error occurred during scraping:\n\n{error_msg}\n\nURL: {url}"
+        )
+        raise  # Re-raise the exception for Celery to handle
 
 def fetch_url(url):
      response = requests.get(url)

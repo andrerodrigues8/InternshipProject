@@ -6,3 +6,5 @@ Requirement 3 done
 Requirement 2 done with PWA
 Requirement 6 done
 Requirement 7 done
+Requirement 9 done
+Requirement 8 done

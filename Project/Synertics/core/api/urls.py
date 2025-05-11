@@ -7,5 +7,6 @@ urlpatterns=[
     path('percentage/',views.getPercentage),
     path('allprices/',views.getAllPrices),
     path('trades/',views.getTrades),
-    
+    path('trade/<str:pk>/',views.getTrade),
+    path('trade/date/<str:date>/',views.getTradeByDate),
 ]

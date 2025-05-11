@@ -11,6 +11,8 @@ def getRoutes(request):
             "GET /api/percentage",
             "GET /api/allprices",
             "GET /api/trades",
+            "GET /api/trade/:id",
+            "GET /api/trade/date/YYYY-MM-DD",
             ]
     return Response(routes)
 @api_view(["GET"])
@@ -48,4 +50,14 @@ def getAllPrices(request):
 def getTrades(request):
     trades=Trade.objects.all()
     serializer=TradeSerializer(trades,many=True)
+    return Response(serializer.data)
+@api_view(["GET"])
+def getTrade(request,pk):
+    trade=Trade.objects.get(id=pk)
+    serializer=TradeSerializer(trade,many=False)
+    return Response(serializer.data)
+@api_view(["GET"])
+def getTradeByDate(request,date):
+    trade=Trade.objects.filter(day=date)
+    serializer=TradeSerializer(trade,many=True)
     return Response(serializer.data)
