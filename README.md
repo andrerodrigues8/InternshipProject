@@ -34,8 +34,6 @@ Synertics is a platform that automates the data scraping of Greek electricity fu
 
 ## Authors
 
-Contributors names and contact info
-
 André Rodrigues
 rodrigues.n.andre46@gmail.com
 
